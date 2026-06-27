@@ -2,7 +2,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Integration-style test — simulates a broader workflow combining
+ * Integration-style test - simulates a broader workflow combining
  * multiple App operations together, as opposed to isolated unit tests.
  * Runs in the Maven "integration-test" phase via the Failsafe plugin.
  */
