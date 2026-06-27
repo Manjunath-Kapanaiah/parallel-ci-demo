@@ -1,85 +1,41 @@
-pipeline {
-    agent any
+public class App {
 
-    tools {
-        maven 'mymaven'   // must match name in Manage Jenkins > Tools > Maven installations
+    public int add(int a, int b) {
+        return a + b;
     }
 
-    stages {
-
-        stage('Checkout') {
-            steps {
-                echo 'Checking out source code...'
-                git  'https://github.com/Manjunath-Kapanaiah/parallel-ci-demo.git'
-                checkout scm
-            }
-        }
-
-        stage('Build') {
-            steps {
-                echo 'Compiling the project...'
-                bat 'mvn clean compile'
-            }
-        }
-
-        stage('Unit Testing') {
-            steps {
-                echo 'Running unit tests...'
-                bat 'mvn test'
-            }
-            post {
-                always {
-                    junit '**/target/surefire-reports/*.xml'
-                }
-            }
-        }
-
-        stage('SCA - Static Code Analysis') {
-            steps {
-                echo 'Running static code analysis (SpotBugs)...'
-                bat 'mvn com.github.spotbugs:spotbugs-maven-plugin:spotbugs'
-            }
-            post {
-                always {
-                    archiveArtifacts artifacts: '**/target/spotbugsXml.xml', allowEmptyArchive: true
-                }
-            }
-        }
-
-        stage('Integration Testing') {
-            steps {
-                echo 'Running integration tests...'
-                bat 'mvn verify -DskipUnitTests=true'
-            }
-            post {
-                always {
-                    junit '**/target/failsafe-reports/*.xml'
-                }
-            }
-        }
-
-        stage('Package') {
-            steps {
-                echo 'Packaging the application...'
-                bat 'mvn package -DskipTests'
-            }
-            post {
-                success {
-                    archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
-                }
-            }
-        }
+    public int subtract(int a, int b) {
+        return a - b;
     }
 
-    post {
-        always {
-            echo 'Pipeline execution completed.'
+    public int multiply(int a, int b) {
+        return a * b;
+    }
+
+    public double divide(int a, int b) {
+        if (b == 0) {
+            throw new ArithmeticException("Division by zero is not allowed");
         }
-        success {
-            echo 'All CI stages (Unit Test, SCA, Integration Test, Package) passed!'
+        return (double) a / b;
+    }
+
+    public boolean isPrime(int n) {
+        if (n < 2) {
+            return false;
         }
-        failure {
-            echo 'Pipeline failed! Check stage logs above.'
+        for (int i = 2; i <= Math.sqrt(n); i++) {
+            if (n % i == 0) {
+                return false;
+            }
         }
+        return true;
+    }
+
+    public static void main(String[] args) {
+        App app = new App();
+        System.out.println("App started.");
+        System.out.println("5 + 3 = " + app.add(5, 3));
+        System.out.println("10 / 2 = " + app.divide(10, 2));
+        System.out.println("Is 7 prime? " + app.isPrime(7));
     }
 }
